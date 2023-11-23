@@ -1,0 +1,59 @@
+<!-- tag_list.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  /* Добавьте эти стили в ваш файл CSS или в тот же HTML-файл в разделе <style> */
+  .tag-list-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+  }
+
+  .tag-list-heading {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tag-item {
+    background-color: #8a55a5;
+    color: white;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin: 10px;
+    transition: background-color 0.3s;
+  }
+
+  .tag-item:hover {
+    background-color: #6d3d77;
+  }
+
+  .tag-link {
+    text-decoration: none;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+</style>
+  <div class="tag-list-container">
+    <h2 class="tag-list-heading">All Tags</h2>
+    <div class="tag-list">
+      {% for tag in tags %}
+        <div class="tag-item">
+          <a href="{% url 'tag_detail' tag.tag_id %}" class="tag-link">
+            {{ tag.tag_name }}
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+

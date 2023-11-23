@@ -1,0 +1,309 @@
+<!-- Ваш файл templates/base.html -->
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: indigo;
+        }
+
+        .main-header {
+            background-color: #1f2030;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            position: relative;
+        }
+
+        .header-logo img {
+            max-height: 40px;
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            margin-right: 20px; /* Отступ справа */
+        }
+
+        .header-search input {
+            width: 500px; /* Ширина строки поиска */
+            padding: 8px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px; /* Отступ между строкой поиска и кнопкой */
+        }
+        .sidebar-footer {
+            position: absolute;
+            padding-bottom: 40px;
+            left: 10px;
+            color: white;
+            font-size: 14px;
+            bottom: 40px;
+            z-index: 3;
+        }
+
+
+        .header-search img {
+            max-height: 25px;
+            margin-right: 5px; /* Отступ между изображением и кнопкой */
+        }
+
+        .header-search button {
+            background-color: #8a55a5;
+            color: white;
+            padding: 9px 13px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .header-buttons a {
+            text-decoration: none;
+            color: white;
+            margin-left: 10px;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .liked-games {
+            background-color: transparent;
+        }
+
+        .login-button {
+            background-color: #8a55a7;
+        }
+
+        /* Стили для боковой панели */
+        .sidebar {
+            width: 200px;
+            height: 100%;
+            background-color: #2c2d3b;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            transition: left 0.3s ease;
+            padding-top: 60px;
+            color: white;
+            z-index: 2;
+        }
+
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .sidebar-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .menu-icon {
+            position: absolute;
+            margin: -5px;
+        }
+
+        .site-title {
+            margin-left: 50px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 150%;
+        }
+
+        .nickname {
+            color: white;
+            margin-left: 10px;
+            margin-top 5px;
+            font-size: 20px;
+        }
+
+@media only screen and (max-width: 652px) and (max-height: 400px) {
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: indigo;
+}
+
+.main-header {
+    background-color: #1f2030;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: relative;
+    flex-direction: column;
+}
+
+.header-logo img {
+    max-height: 30px; /* Уменьшаем высоту логотипа */
+    margin-bottom: 5px; /* Добавлено для отступа между логотипом и текстом */
+    margin-left: -290px;
+    }
+
+
+.header-search {
+    display: flex;
+    align-items: center;
+    margin-right: 10px; /* Уменьшаем отступ справа */
+}
+
+.header-search input {
+    width: 300px; /* Уменьшаем ширину строки поиска */
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 5px; /* Уменьшаем отступ между строкой поиска и кнопкой */
+}
+
+.header-search img {
+    max-height: 20px; /* Уменьшаем высоту изображения */
+    margin-right: 3px; /* Уменьшаем отступ между изображением и кнопкой */
+}
+
+.header-search button {
+    background-color: #8a55a5;
+    color: white;
+    padding: 8px 10px; /* Уменьшаем отступы кнопки */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .login-button {
+        background-color: #8a55a7;
+        padding: 6px 10px; /* Уменьшено значение */
+        left: 280px;
+        bottom: 50px;
+        position: relative;
+    }
+
+.sidebar-footer {
+    position: absolute;
+    padding-bottom: 20px; /* Уменьшаем отступ вниз */
+    left: 10px;
+    color: white;
+    font-size: 12px; /* Уменьшаем размер шрифта */
+    bottom: 20px; /* Уменьшаем отступ вниз */
+    z-index: 3;
+}
+
+.header-buttons a {
+    text-decoration: none;
+    color: white;
+    margin-left: 5px; /* Уменьшаем отступ слева */
+    padding: 6px 10px; /* Уменьшаем отступы кнопок */
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.sidebar {
+    width: 150px; /* Уменьшаем ширину боковой панели */
+    height: 100%;
+    background-color: #2c2d3b;
+    position: fixed;
+    top: 0;
+    left: -180px; /* Уменьшаем отступ слева */
+    transition: left 0.3s ease;
+    padding-top: 40px; /* Уменьшаем отступ сверху */
+    color: white;
+    z-index: 2;
+}
+
+.site-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 120%; /* Уменьшаем размер шрифта */
+    margin-left: -60px;
+}
+
+.nickname {
+    color: white;
+    margin-left: 5px; /* Уменьшаем отступ слева */
+    margin-top: 3px; /* Уменьшаем отступ сверху */
+    font-size: 16px; /* Уменьшаем размер шрифта */
+}
+
+}
+
+
+
+
+</style>
+    <title>Website</title>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="header-logo">
+            <a>
+                <img src="{% static 'myapp/images/pngegg.png' %}" alt="Toggle Sidebar" class="menu-icon" onclick="toggleSidebar()">
+            </a>
+            <a class="site-title">Online Games</a>
+        </div>
+        <div class="header-search">
+            <form action="{% url 'game_search' %}" method="get">
+                <input type="text" name="q" placeholder="Search" value="{{ request.GET.q }}">
+                <button type="submit" class="search-button">Search</button>
+            </form>
+        </div>
+        <div class="header-buttons">
+                    {% if request.user.is_authenticated %}
+            <a href="/logout_page" class="logout-btn">Logout</a>
+        {% else %}
+            <a href="{% url 'login_page' %}" class="login-button">Log In</a>
+        {% endif %}
+        </div>
+    </header>
+
+    <!-- Боковая панель -->
+<div class="sidebar" id="sidebar">
+    <span class="sidebar-close" onclick="closeSidebar()">X</span>
+    <div class="user-info"><h1 class="nickname">{{ request.user }}</h1></div>
+    <a href="{% url 'index' %}">Главная</a>
+    <a href="{% url 'tag' %}">Теги</a>
+    <a href="{% url 'allgames' %}">Список игр</a>
+    <a href="{% url 'aboutUs' %}">О нас</a>
+    <div class="sidebar-footer">
+        <p>2023 Farquad Technologies</p>
+    </div>
+</div>
+
+
+    <div class="container">
+        <div>{% block content %}{% endblock content %}</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var sidebar = document.getElementById('sidebar');
+
+            // Функция для закрытия боковой панели
+            window.closeSidebar = function () {
+                sidebar.style.left = '-250px';
+            };
+
+            // Функция для переключения боковой панели
+            window.toggleSidebar = function () {
+                var sidebarLeft = parseInt(getComputedStyle(sidebar).left);
+                sidebar.style.left = sidebarLeft === 0 ? '-250px' : '0';
+            };
+        });
+    </script>
+
+    <!-- Your page content goes here -->
+
+</body>
+</html>

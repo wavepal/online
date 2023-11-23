@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.table {
+    width: 600px;
+    height: 400px;
+    background-color: black;
+    position: relative;
+}
+
+.paddle {
+    width: 10px;
+    height: 80px;
+    background-color: white;
+    position: absolute;
+    top: 160px;
+}
+
+#leftPaddle {
+    left: 10px;
+}
+
+#rightPaddle {
+    right: 10px;
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    background-color: yellow;
+    position: absolute;
+    top: 190px;
+    left: 290px;
+    border-radius: 50%;
+}
+
+</style>
+<div class="table">
+  <div class="paddle" id="leftPaddle"></div>
+  <div class="ball" id="ball"></div>
+  <div class="paddle" id="rightPaddle"></div>
+</div>
+<script>
+  const leftPaddle = document.getElementById("leftPaddle");
+const rightPaddle = document.getElementById("rightPaddle");
+const ball = document.getElementById("ball");
+let ballX = 290;
+let ballY = 190;
+let ballSpeedX = 5;
+let ballSpeedY = 5;
+
+document.addEventListener("keydown", function(event) {
+    if (event.key === "ArrowUp" && rightPaddle.offsetTop > 0) {
+        rightPaddle.style.top = (rightPaddle.offsetTop - 10) + "px";
+    }
+    if (event.key === "ArrowDown" && rightPaddle.offsetTop < 320) {
+        rightPaddle.style.top = (rightPaddle.offsetTop + 10) + "px";
+    }
+    if (event.key === "w" && leftPaddle.offsetTop > 0) {
+        leftPaddle.style.top = (leftPaddle.offsetTop - 10) + "px";
+    }
+    if (event.key === "s" && leftPaddle.offsetTop < 320) {
+        leftPaddle.style.top = (leftPaddle.offsetTop + 10) + "px";
+    }
+});
+
+function moveBall() {
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+
+    // Collision with right paddle
+    if (
+        ballX >= 570 &&
+        ballX <= 580 &&
+        ballY >= rightPaddle.offsetTop &&
+        ballY <= rightPaddle.offsetTop + 80
+    ) {
+        ballSpeedX = -ballSpeedX;
+    }
+
+    // Collision with left paddle
+    if (
+        ballX >= 20 &&
+        ballX <= 30 &&
+        ballY >= leftPaddle.offsetTop &&
+        ballY <= leftPaddle.offsetTop + 80
+    ) {
+        ballSpeedX = -ballSpeedX;
+    }
+
+    // Ball hits top and bottom of the table
+    if (ballY >= 380 || ballY <= 0) {
+        ballSpeedY = -ballSpeedY;
+    }
+
+    // Ball out of bounds
+    if (ballX >= 600 || ballX <= 0) {
+        ballX = 290;
+        ballY = 190;
+        ballSpeedX = 5;
+        ballSpeedY = 5;
+    }
+
+    ball.style.top = ballY + "px";
+    ball.style.left = ballX + "px";
+}
+
+setInterval(moveBall, 30);
+
+</script>
+</body>
+</html>

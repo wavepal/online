@@ -1,0 +1,67 @@
+<!-- myapp/templates/about_us.html -->
+{% extends 'base.html' %}
+
+{% load static %} <!-- Add this line to load the static tag -->
+
+{% block title %}About Us{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+        }
+
+        .about-container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="about-container">
+    <h1>Welcome to Our Online Gaming Platform</h1>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed imperdiet risus sed ligula vulputate,
+        vel aliquet neque fringilla. In hac habitasse platea dictumst. Maecenas scelerisque ante ut nisi
+        hendrerit, id facilisis leo pharetra. Fusce et ultrices odio. Vivamus vitae commodo leo, nec gravida
+        metus. Curabitur euismod velit eu nisl vulputate, sit amet dapibus libero luctus.
+    </p>
+
+    <p>
+        Nullam venenatis, est eget suscipit malesuada, justo quam laoreet purus, nec auctor nisl elit in
+        libero. Proin malesuada, odio sit amet interdum iaculis, lacus erat convallis quam, ac imperdiet purus
+        justo eu velit. In hac habitasse platea dictumst.
+    </p>
+
+    <h2>Our Mission</h2>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis ut risus vitae neque tincidunt dapibus
+        nec eu justo. Sed sollicitudin facilisis mauris, vel viverra purus luctus at. In hac habitasse platea
+        dictumst.
+    </p>
+</div>
+
+</body>
+</html>
+{% endblock %}

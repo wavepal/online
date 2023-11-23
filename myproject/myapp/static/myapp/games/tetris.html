@@ -1,0 +1,484 @@
+<head>
+  <meta charset="utf-8">
+  <script src="app.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="style.css">
+  </link>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <title></title>
+    <style>
+        * {
+  margin: 0;
+}
+
+body {
+  font-family: sans-serif;
+}
+
+#playground {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h2 {
+  text-transform: uppercase;
+  padding: 0.5em;
+}
+
+p,
+h3 {
+  line-height: 1.5em;
+  color: white;
+}
+
+h3 {
+  font-weight: bold;
+  padding-bottom: 0.5em;
+}
+
+.container {
+  display: flex;
+  background-color: darkgrey;
+  padding: 20px;
+  border: 2px solid lightgray;
+}
+
+.grid {
+  width: 200px;
+  height: 400px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: lightgray;
+  margin-right: 20px;
+}
+
+.grid div {
+  height: 20px;
+  width: 20px;
+}
+
+.tetromino {
+  box-sizing: border-box;
+  border-style: outset;
+}
+
+.mini-grid {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  background-color: lightgray;
+}
+
+.mini-grid div {
+  height: 20px;
+  width: 20px;
+}
+
+button {
+  margin-top: 5px;
+  width: 120px;
+  height: 30px;
+}
+    </style>
+</head>
+
+<body>
+  <div id="playground">
+    <h2>Tetris</h2>
+    <div class="container">
+      <div id="left-col" class="grid"></div>
+      <div id="right-col">
+        <div id="mini-grid" class="mini-grid"></div>
+        <h3>Score: <span id="score">0</span><br>Level: <span id="level"> 1 </span><br>Time: <span id="counter">00:00</span></h3>
+        <p>Navigation:<br><i class="fa fa-arrow-up"></i> up <i class="fa fa-arrow-down"></i> down<br><i class="fa fa-arrow-left"></i> left <i class="fa fa-arrow-right"></i> right<br><i class="fa fa-keyboard-o"></i> space</p>
+        <button id="start-button" class="fa fa-play"> Start / Stop</button><br>
+        <button id="reset-button" class="fa fa-undo"> Reset</button>
+      </div>
+    </div>
+  </div>
+<script>
+    /***************************************************************************************
+ *   This project is based on a YouTube-Tutorial from Ania Kubow,
+ *   whicht can be found here: https://www.youtube.com/watch?v=rAUn1Lom6dw
+ *   My thanks go to her and freeCodeCamp.org!
+ *
+ *   The basic game functions have been expanded by game levels (going faster),
+ *   a reset functionality, a timer and some styling.
+ ***************************************************************************************/
+
+document.addEventListener("DOMContentLoaded", () => {
+  const grid = document.querySelector(".grid");
+  const scoreDisplay = document.querySelector("#score");
+  const levelDisplay = document.querySelector("#level");
+  const counterDisplay = document.querySelector("#counter");
+  const upNextDisplay = document.querySelector("#upNext");
+  const startBtn = document.querySelector("#start-button");
+  const resetBtn = document.querySelector("#reset-button");
+  const width = 10;
+  let nextRandom = 0;
+  let timerId;
+  let score = 0;
+  let level = 1;
+  let playTime = "00:00";
+  let totalSeconds = 0;
+  let interval = 1000;
+
+  const colors = ["yellow", "red", "purple", "green", "blue"];
+
+  //The Tetrominoes
+  const lTetromino = [
+    [1, width + 1, width * 2 + 1, 2],
+    [width, width + 1, width + 2, width * 2 + 2],
+    [1, width + 1, width * 2 + 1, width * 2],
+    [width, width * 2, width * 2 + 1, width * 2 + 2]
+  ];
+
+  const zTetromino = [
+    [0, width, width + 1, width * 2 + 1],
+    [width + 1, width + 2, width * 2, width * 2 + 1],
+    [0, width, width + 1, width * 2 + 1],
+    [width + 1, width + 2, width * 2, width * 2 + 1]
+  ];
+
+  const tTetromino = [
+    [1, width, width + 1, width + 2],
+    [1, width + 1, width + 2, width * 2 + 1],
+    [width, width + 1, width + 2, width * 2 + 1],
+    [1, width, width + 1, width * 2 + 1]
+  ];
+
+  const oTetromino = [
+    [0, 1, width, width + 1],
+    [0, 1, width, width + 1],
+    [0, 1, width, width + 1],
+    [0, 1, width, width + 1]
+  ];
+
+  const iTetromino = [
+    [1, width + 1, width * 2 + 1, width * 3 + 1],
+    [width, width + 1, width + 2, width + 3],
+    [1, width + 1, width * 2 + 1, width * 3 + 1],
+    [width, width + 1, width + 2, width + 3]
+  ];
+
+  const theTetrominoes = [
+    lTetromino,
+    zTetromino,
+    tTetromino,
+    oTetromino,
+    iTetromino
+  ];
+
+  // add divs for grid and mini-grid
+  for (i = 0; i < 16; i++) {
+    var node1 = document.createElement("div");
+    var list = document.getElementById("mini-grid");
+    list.insertBefore(node1, list.childNodes[0]);
+  }
+
+  for (i = 0; i < 210; i++) {
+    var node2 = document.createElement("div");
+    document.getElementById("left-col").appendChild(node2);
+  }
+
+  let squares = Array.from(document.querySelectorAll(".grid div"));
+
+  // initial position and rotation of first tetromino at start
+  let currentPosition = 4;
+  let currentRotation = 0;
+
+  //randomly select a Tetromino and its first rotation
+  let random = Math.floor(Math.random() * theTetrominoes.length);
+  let current = theTetrominoes[random][currentRotation];
+
+  //draw the Tetromino
+  function draw() {
+    current.forEach((index) => {
+      squares[currentPosition + index].classList.add("tetromino");
+      squares[currentPosition + index].style.backgroundColor = colors[random];
+      squares[currentPosition + index].style.borderColor = colors[random];
+    });
+  }
+
+  //undraw the Tetromino
+  function undraw() {
+    current.forEach((index) => {
+      squares[currentPosition + index].classList.remove("tetromino");
+      squares[currentPosition + index].style.backgroundColor = "";
+      squares[currentPosition + index].style.borderColor = "";
+    });
+  }
+
+  //assign functions to keyCodes
+  function control(e) {
+    if (e.keyCode === 37) {
+      moveLeft();
+    } else if (e.keyCode === 38) {
+      rotate();
+    } else if (e.keyCode === 39) {
+      moveRight();
+    } else if (e.keyCode === 40) {
+      moveDown();
+    }
+  }
+
+  function speedDown(e) {
+    if (e.keyCode === 32) {
+      moveDown();
+    }
+  }
+
+  // event listensers for key navigation
+  document.addEventListener("keyup", control);
+  document.addEventListener("keydown", speedDown);
+
+  //move down function
+  function moveDown() {
+    undraw();
+    currentPosition += width;
+    draw();
+    freeze();
+  }
+
+  //freeze function
+  function freeze() {
+    if (
+      current.some((index) =>
+        squares[currentPosition + index + width].classList.contains("taken")
+      )
+    ) {
+      current.forEach((index) =>
+        squares[currentPosition + index].classList.add("taken")
+      );
+      //start a new tetromino falling
+      random = nextRandom;
+      nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+      current = theTetrominoes[random][currentRotation];
+      currentPosition = 4;
+      draw();
+      displayShape();
+      countTime();
+      addScore();
+      gameOver();
+    }
+  }
+
+  //move the tetromino left, unless is at the edge or there is a blockage
+  function moveLeft() {
+    undraw();
+    const isAtLeftEdge = current.some(
+      (index) => (currentPosition + index) % width === 0
+    );
+    if (!isAtLeftEdge) currentPosition -= 1;
+    if (
+      current.some((index) =>
+        squares[currentPosition + index].classList.contains("taken")
+      )
+    ) {
+      currentPosition += 1;
+    }
+    draw();
+  }
+
+  //move the tetromino right, unless is at the edge or there is a blockage
+  function moveRight() {
+    undraw();
+    const isAtRightEdge = current.some(
+      (index) => (currentPosition + index) % width === width - 1
+    );
+    if (!isAtRightEdge) currentPosition += 1;
+    if (
+      current.some((index) =>
+        squares[currentPosition + index].classList.contains("taken")
+      )
+    ) {
+      currentPosition -= 1;
+    }
+    draw();
+  }
+
+  // fix rotation of tetrominos at the edge
+  function isAtRight() {
+    return current.some((index) => (currentPosition + index + 1) % width === 0);
+  }
+
+  function isAtLeft() {
+    return current.some((index) => (currentPosition + index) % width === 0);
+  }
+
+  //rotate the tetromino
+  function rotate() {
+    undraw();
+    currentRotation++;
+    if (currentRotation === current.length) {
+      //if the current rotation gets to 4, make it go back to 0
+      currentRotation = 0;
+    }
+    current = theTetrominoes[random][currentRotation];
+    draw();
+  }
+
+  //show up-next tetromino in mini-grid display
+  const displaySquares = document.querySelectorAll(".mini-grid div");
+  const displayWidth = 4;
+  const displayIndex = 0;
+
+  //the Tetrominos without rotations
+  const upNextTetrominoes = [
+    [1, displayWidth + 1, displayWidth * 2 + 1, 2], //lTetromino
+    [0, displayWidth, displayWidth + 1, displayWidth * 2 + 1], //zTetromino
+    [1, displayWidth, displayWidth + 1, displayWidth + 2], //tTetromino
+    [0, 1, displayWidth, displayWidth + 1], //oTetromino
+    [1, displayWidth + 1, displayWidth * 2 + 1, displayWidth * 3 + 1] //iTetromino
+  ];
+
+  //display the shape in the mini-grid display
+  function displayShape() {
+    //remove any trace of a tetromino form the entire grid
+    displaySquares.forEach((square) => {
+      square.classList.remove("tetromino");
+      square.style.backgroundColor = "";
+      square.style.borderColor = "";
+    });
+    upNextTetrominoes[nextRandom].forEach((index) => {
+      displaySquares[displayIndex + index].classList.add("tetromino");
+      displaySquares[displayIndex + index].style.backgroundColor =
+        colors[nextRandom];
+      displaySquares[displayIndex + index].style.borderColor =
+        colors[nextRandom];
+    });
+  }
+
+  // counter function to display play time
+  function countTime() {
+    ++totalSeconds;
+    seconds = pad(totalSeconds % 60);
+    minutes = pad(parseInt(totalSeconds / 60));
+
+    playTime = minutes + ":" + seconds;
+    counterDisplay.innerHTML = playTime;
+  }
+
+  function pad(val) {
+    var valString = val + "";
+    if (valString.length < 2) {
+      return "0" + valString;
+    } else {
+      return valString;
+    }
+  }
+
+  // event listener for start button
+  startBtn.addEventListener("click", () => {
+    if (timerId) {
+      clearInterval(timerId);
+      clearInterval(counter);
+      timerId = null;
+    } else {
+      draw();
+      timerId = setInterval(moveDown, interval);
+      counter = setInterval(countTime, 1000);
+      nextRandom = Math.floor(Math.random() * theTetrominoes.length);
+      displayShape();
+      bottomRow();
+    }
+  });
+
+  // add bottom row to indicate playground boundaries
+  function bottomRow() {
+    for (i = 0; i < 10; i++) {
+      squares[209 - i].classList.add("taken");
+    }
+  }
+
+  // event listener for reset button
+  resetBtn.addEventListener("click", () => {
+    // reset interval
+    clearInterval(timerId);
+    timerId = null;
+    interval = 1000;
+
+    // reset level, score and time
+    level = 1;
+    score = 0;
+    clearInterval(counter);
+    totalSeconds = 0;
+    playTime = "00:00";
+    scoreDisplay.innerHTML = score;
+    levelDisplay.innerHTML = level;
+    counterDisplay.innerHTML = playTime;
+
+    // reset playground colors and position
+    squares.forEach((square) => {
+      square.classList.remove("tetromino");
+      square.classList.remove("taken");
+      square.style.backgroundColor = "";
+      square.style.borderColor = "";
+    });
+    displaySquares.forEach((square) => {
+      square.classList.remove("tetromino");
+      square.style.backgroundColor = "";
+      square.style.borderColor = "";
+    });
+    currentPosition = 4;
+    bottomRow();
+  });
+
+  //add score at full row
+  function addScore() {
+    for (let i = 0; i < 199; i += width) {
+      const row = [
+        i,
+        i + 1,
+        i + 2,
+        i + 3,
+        i + 4,
+        i + 5,
+        i + 6,
+        i + 7,
+        i + 8,
+        i + 9
+      ];
+
+      if (row.every((index) => squares[index].classList.contains("taken"))) {
+        score += 10;
+        scoreDisplay.innerHTML = score;
+        row.forEach((index) => {
+          squares[index].classList.remove("taken");
+          squares[index].classList.remove("tetromino");
+          squares[index].style.backgroundColor = "";
+          squares[index].style.borderColor = "";
+        });
+        const squaresRemoved = squares.splice(i, width);
+        squares = squaresRemoved.concat(squares);
+        squares.forEach((cell) => grid.appendChild(cell));
+
+        if (score === level * 100) {
+          level += 1;
+          clearInterval(timerId);
+          interval *= 0.9;
+          timerId = setInterval(moveDown, interval);
+          levelDisplay.innerHTML = level;
+        }
+      }
+    }
+  }
+
+  //game over
+  function gameOver() {
+    if (
+      current.some((index) =>
+        squares[currentPosition + index].classList.contains("taken")
+      )
+    ) {
+      scoreDisplay.innerHTML = "end";
+      clearInterval(timerId);
+    }
+  }
+});
+</script>
+</body>

@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %} <!-- Add this line to load the static tag -->
+
+{% block title %}Game Detail{% endblock %}
+
+{% block content %}
+    <style>
+
+        h1 {
+            color: #1f2030;
+            margin-top: 10px;
+            margin-left: 10px;
+            color: white;
+        }
+
+        .game-banner-image {
+            max-width: 100%;
+            height: auto;
+            margin: 20px 0;
+            width: 20%;
+            height: 20%;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            margin-bottom: 10px;
+        }
+
+        strong {
+            color: #1f2030;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            display: inline-block;
+            margin-right: 10px;
+            margin-bottom: 20px;
+            background-color: indigo;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+
+
+        button {
+            background-color: #8a55a5;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkviolet;
+        }
+
+        .escape-button {
+            margin: 20px;
+        }
+
+        form {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="{% url 'index' %}">
+        <button type="submit" class="escape-button">Back to Game Catalog</button>
+    </a>
+</header>
+
+
+
+<div style="text-align: center;">
+    <img src="{% static 'myapp/game_image/' %}{{ game.imagename }}" class="game-banner-image" alt="{{ game.game_name }}">
+    <h1>{{ game.game_name }}</h1>
+</div>
+
+<div style="margin: 20px; padding: 20px; background-color: white; border-radius: 5px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+    <p><strong>Description:</strong> {{ game.description }}</p>
+    <p><strong>Likes:</strong> {{ game.likes }}</p>
+    <p><strong>Release Date:</strong> {{ game.release_date }}</p>
+    <p><strong>Developer:</strong> {{ game.developer_name }}</p>
+
+    <h2>Tags:</h2>
+    <ul>
+        {% for tag in game.tags.all %}
+            <li>{{ tag.tag_name }}</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Кнопка для перехода на страницу play_detail с использованием filename -->
+    <form method="get" action="{% url 'play-html' filename=game.filename %}">
+        <button type="submit">Play Game</button>
+    </form>
+</div>
+
+</body>
+
+{% endblock %}
+

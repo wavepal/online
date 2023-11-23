@@ -1,0 +1,74 @@
+<!-- Ваш файл templates/game_search.html -->
+{% extends 'base.html' %}
+
+{% block title %}Game Search{% endblock %}
+{% load static %}
+{% block content %}
+<style>
+    .search-results {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.search-results-heading {
+    font-size: 24px;
+    color: white;
+}
+
+.game-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.game-item {
+    margin: 10px;
+}
+
+.game-link {
+    text-decoration: none;
+    color: #333;
+    display: block;
+    text-align: center;
+    transition: transform 0.3s;
+}
+
+.game-link:hover {
+    transform: scale(1.1);
+}
+
+.game-thumbnail {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.game-name {
+    display: block;
+    font-size: 16px;
+    margin-top: 5px;
+    color: white;
+}
+</style>
+<div class="search-results">
+    <h1 class="search-results-heading">Search Results</h1>
+    {% if games %}
+        <ul class="game-list">
+            {% for game in games %}
+                <li class="game-item">
+                    <a href="{% url 'game_detail' pk=game.pk %}" class="game-link">
+                        <img src="{% static 'myapp/game_image/' %}{{ game.imagename }}" alt="{{ game.game_name }}" class="game-thumbnail">
+                        <span class="game-name">{{ game.game_name }}</span>
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="no-results">No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}
